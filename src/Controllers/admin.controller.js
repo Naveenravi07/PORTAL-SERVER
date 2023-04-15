@@ -26,7 +26,6 @@ const markRegistrationAsRead = async (req) => {
     try {
         const { id } = req.query
         const updatedDoc = await registrationModel.findOneAndUpdate({ _id: id }, { $set: { valid: false } }, { new: true })
-        console.log(updatedDoc)
         return updatedDoc
     } catch (err) {
         throw err
@@ -62,4 +61,13 @@ const filterCandidate = async (req) => {
     }
 }
 
-module.exports = { registerNewCanidate, getCandidate, markRegistrationAsRead, getAllCandidates, searchCandidate, filterCandidate }
+const deleteCandidate = async (req)=>{
+    try {
+        const registration = await registrationModel.findOneAndDelete({_id:req.query.id})
+        return registration
+    } catch (err) {
+        throw err
+    }
+}
+
+module.exports = { registerNewCanidate, getCandidate, markRegistrationAsRead, getAllCandidates, searchCandidate, filterCandidate ,deleteCandidate }
