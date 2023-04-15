@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { registerNewCanidate, getCandidate, markRegistrationAsRead ,getAllCandidates } = require('../Controllers/admin.controller')
+const { registerNewCanidate, getCandidate, markRegistrationAsRead ,getAllCandidates, searchCandidate ,filterCandidate} = require('../Controllers/admin.controller')
 const Response = require('../Classes/Response')
 
 
@@ -36,6 +36,21 @@ router.patch('/registration/markasread', async (req, res) => {
 
 router.get('/registrations/all', async (req, res) => {
     let response = await getAllCandidates(req)
+    .then((response) => new Response(200, response, false))
+    .catch((err) => new Response(400, null, true))
+    res.status(response.status).send(response)
+})
+
+
+router.get('/registration/search', async (req, res) => {
+    let response = await searchCandidate(req)
+    .then((response) => new Response(200, response, false))
+    .catch((err) => new Response(400, null, true))
+    res.status(response.status).send(response)
+})
+
+router.get('/registration/filter', async (req, res) => {
+    let response = await filterCandidate(req)
     .then((response) => new Response(200, response, false))
     .catch((err) => new Response(400, null, true))
     res.status(response.status).send(response)
