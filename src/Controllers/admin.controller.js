@@ -15,9 +15,14 @@ const registerNewCanidate = async (body) => {
 
 const getAllCandidates = async (req) => {
     try {
-        const registration = await registrationModel.find({valid:true}).sort(req.query)
+        let {query}=req
+        let page = query.page >= 1 ? query.page : 1;
+        page = page - 1
+        const limit = 2
+        const registration = await registrationModel.find({valid:true}).limit(limit).skip(limit * parseInt(page)).sort(req.query.sort)
         return registration
     } catch (err) {
+        console.log(err)
         throw err
     }
 }
@@ -45,7 +50,7 @@ const getCandidate = async (req) => {
 
 const searchCandidate = async (req) => {
     try {
-        const registration = await registrationModel.find({ name: { $regex: req.query.name, "$options": "i" } })
+        const registration = await registrationModel.find({ name: { $regex: req.query.name, "$options": "i" } }).limit(10)
         return registration
     } catch (err) {
         throw err
@@ -70,4 +75,13 @@ const deleteCandidate = async (req)=>{
     }
 }
 
-module.exports = { registerNewCanidate, getCandidate, markRegistrationAsRead, getAllCandidates, searchCandidate, filterCandidate ,deleteCandidate }
+const getTotalNumberOfValidRegistrations = async (req)=>{
+    try {
+        const registration = await registrationModel.find({valid:true}).count()
+        return registration
+    } catch (err) {
+        throw err
+    }
+}
+
+module.exports = { registerNewCanidate, getCandidate, markRegistrationAsRead, getAllCandidates, searchCandidate, filterCandidate ,deleteCandidate,getTotalNumberOfValidRegistrations }

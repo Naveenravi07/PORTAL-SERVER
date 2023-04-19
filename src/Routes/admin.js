@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { registerNewCanidate, getCandidate, markRegistrationAsRead ,getAllCandidates, searchCandidate ,filterCandidate , deleteCandidate} = require('../Controllers/admin.controller')
+const { registerNewCanidate, getCandidate, markRegistrationAsRead ,getAllCandidates, searchCandidate ,filterCandidate , deleteCandidate, getTotalNumberOfValidRegistrations} = require('../Controllers/admin.controller')
 const Response = require('../Classes/Response')
 
 
@@ -15,8 +15,8 @@ router.post('/login', (req, res) => {
 
 router.post('/register', async (req, res) => {
     let doc = await registerNewCanidate(req.body)
-        .then((response) => new Response(200, response, false))
-        .catch((err) => new Response(400, null, true))
+    .then((response) => new Response(200, response, false))
+    .catch((err) => new Response(400, null, true))
     res.send(doc)
 })
 
@@ -64,5 +64,12 @@ router.delete('/registration/delete', async (req, res) => {
     res.status(response.status).send(response)
 })
 
+
+router.get('/registrations/valid/total', async (req, res) => {
+    let response = await getTotalNumberOfValidRegistrations(req)
+    .then((response) => new Response(200, {total:response}, false))
+    .catch((err) => new Response(400, null, true))
+    res.status(response.status).send(response)
+})
 
 module.exports = router
