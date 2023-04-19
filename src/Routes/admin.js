@@ -6,7 +6,7 @@ const Response = require('../Classes/Response')
 
 router.post('/login', (req, res) => {
     const { name, pwd } = req.body
-    if (name == "admin" && pwd == "123") {
+    if (name == "admin" && pwd == "cek") {
         res.send({ loggedIn: true })
     } else {
         res.send({ loggedIn: false })

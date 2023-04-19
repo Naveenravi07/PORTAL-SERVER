@@ -1,5 +1,7 @@
 const { registrationModel } = require('../Models/registration')
 const qrcode = require('qrcode')
+const axios = require('axios');
+const { webhook_url } = require('../Constants');
 
 
 const registerNewCanidate = async (body) => {
@@ -18,7 +20,7 @@ const getAllCandidates = async (req) => {
         let {query}=req
         let page = query.page >= 1 ? query.page : 1;
         page = page - 1
-        const limit = 20
+        const limit = 10
         const registration = await registrationModel.find({valid:true}).limit(limit).skip(limit * parseInt(page)).sort(req.query.sort)
         return registration
     } catch (err) {
@@ -68,6 +70,19 @@ const filterCandidate = async (req) => {
 
 const deleteCandidate = async (req)=>{
     try {
+        const document = await registrationModel.findOne({_id:req.query.id}).select('-qrUrl -_id')
+        const embed = {
+            title: 'Registration Deleted',
+            description: `The following registration has been deleted: ${JSON.stringify(document)}`
+          };
+          
+        const message = {
+            content: `Registration Deleted `,
+            embeds:[embed]
+          };
+          axios.post(webhook_url,message)
+          .then((response)=> console.log('Message sent:', response.data))
+          .catch((err)=>console.log(err))
         const registration = await registrationModel.findOneAndDelete({_id:req.query.id})
         return registration
     } catch (err) {
