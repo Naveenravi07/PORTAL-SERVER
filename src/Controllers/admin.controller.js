@@ -18,7 +18,7 @@ const getAllCandidates = async (req) => {
         let {query}=req
         let page = query.page >= 1 ? query.page : 1;
         page = page - 1
-        const limit = 2
+        const limit = 20
         const registration = await registrationModel.find({valid:true}).limit(limit).skip(limit * parseInt(page)).sort(req.query.sort)
         return registration
     } catch (err) {
